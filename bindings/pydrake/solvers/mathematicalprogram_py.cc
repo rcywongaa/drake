@@ -41,6 +41,7 @@ using solvers::MatrixXIndeterminate;
 using solvers::PositiveSemidefiniteConstraint;
 using solvers::QuadraticCost;
 using solvers::RotatedLorentzConeConstraint;
+using solvers::CommonSolverOption;
 using solvers::SolutionResult;
 using solvers::SolverId;
 using solvers::SolverInterface;
@@ -377,6 +378,11 @@ top-level documentation for :py:mod:`pydrake.math`.
               const std::string&>(&SolverOptions::SetOption),
           py::arg("solver_id"), py::arg("solver_option"),
           py::arg("option_value"), doc.SolverOptions.SetOption.doc)
+      .def("SetOption",
+          py::overload_cast<CommonSolverOption,
+              const std::variant<double, int, std::string>&>(
+              &SolverOptions::SetOption),
+          py::arg("key"), py::arg("value"), doc.SolverOptions.SetOption.doc)
       .def(
           "GetOptions",
           [](const SolverOptions& solver_options, SolverId solver_id) {
@@ -1160,6 +1166,13 @@ for every column of ``prog_var_vals``. )""")
             update(prog.GetSolverOptionsStr(id));
             return out;
           });
+
+  py::enum_<CommonSolverOption>(m, "CommonSolverOption",
+      doc.CommonSolverOption.doc)
+      .value("kPrintFileName", CommonSolverOption::kPrintFileName,
+          doc.CommonSolverOption.kPrintFileName.doc)
+      .value("kPrintToConsole", CommonSolverOption::kPrintToConsole,
+          doc.CommonSolverOption.kPrintToConsole.doc);
 
   py::enum_<SolutionResult>(m, "SolutionResult", doc.SolutionResult.doc)
       .value("kSolutionFound", SolutionResult::kSolutionFound,
